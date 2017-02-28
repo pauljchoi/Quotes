@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>QUOTE</title>
+    <style type="text/css">
+       .qqqq{
+         display: inline-block;
+       }
+    </style>
+  {% load humanize %}
+</head>
+<body>
+  <h2>Welcome {{ request.session.user_name }}!</h2>
+  <div class="container">
+
+   <h4>Quotable Quotes</h4>
+  <div class="qqqq" style= "float: left; overflow-y: auto; width: 300px; height: 150px; border: black solid 1px;">
+   <div class="">
+    {% if contents %}
+      {% for content in contents %}
+        <p>{{ content.content }}
+          posted by: <a href="{% url 'quotes:user' user_id=content.user.id %} ">{{content.user.name}}</a>
+        </p>
+        <form class="" action="favorite/{{ content.id }}" method="post">
+              {% csrf_token %}
+              <input type="submit" name="submit" value="add to my list">
+        </form>
+      {% endfor %}
+    {% endif %}
+     </div>
+  </div><!-- end_of_container-->
+  <div class="qqqq" style= "float: left; overflow-y: auto; width: 300px; height: 150px; border: black solid 1px;">
+   <div class="">
+    {% if favorites %}
+      {% for favorite in favorites %}
+        <p>{{ favorite.quote.content }}
+          posted by: <a href="{% url 'quotes:user' user_id=favorite.quote.user.id %} ">{{favorite.quote.user.name}}</a>
+        </p>
+        <form class="" action="delete/{{ favorite.quote.id }}" method="post">
+              {% csrf_token %}
+              <input type="submit" name="submit" value="remove from my list">
+        </form>
+      {% endfor %}
+    {% endif %}
+     </div>
+  </div><!-- end_of_container-->
+
+</div><br><br>
+  <div class="">
+    <p>Contribute a Quote:</p>
+    <form action="{% url 'quotes:create' %}" method='post'>
+      {% csrf_token %}
+      Quoted By:<input type="text" name="user" value="{{ request.session.user_name }}"><br>
+      Message:<textarea name="content" placeholder='Your quotes here..........' rows="8" cols="40"></textarea>
+      <input type="submit" value='SUBMIT'>
+    </form>
+  </div>
+</body>
+</html>
